@@ -63,6 +63,8 @@ function getIssData() {
 var map;
 
 function initMap() {
+  console.log("what is getIssData?")
+  console.log(getIssData);
   var IssData = getIssData();
   console.log(IssData);
   map = new google.maps.Map(document.getElementById('map'), {
