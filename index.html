@@ -41,9 +41,10 @@
 			<div class="col-md-6 col-md-offset-3">
 				<h1>Track the ISS</h1>
 				<br>
-				<p>Well, once this is implemented, anyway.</p>
-				<p>Hello world!</p>
+				<p>Well, once this is implemented, anyway. Please don't touch the map, I think it breaks things ⊙~⊙</p>
 				<button type="button" class="btn btn-default btn-lg" id="updateMap">Update</button>
+				<br>
+
 				<div id="map"></div>
 			</div>
 		</div>
@@ -67,7 +68,7 @@ function setIssPosition() {
 	$.getJSON(openNotifyEndpoint, function(data) {
 		var issPoint = {lat: data.iss_position.latitude, lng: data.iss_position.longitude};		
 		console.log("updating ISS position to " + issPoint.lat + ", " + issPoint.lng)
-		map.center = issPoint;
+		map.setCenter(issPoint);
 		marker.setPosition(issPoint);
 	})
 }
