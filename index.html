@@ -54,21 +54,23 @@
 	<script type="text/javascript" src=./static/js/app.js></script>
 	<script>
 
+function getIssData() {
+	$.getJSON('http://api.open-notify.org/iss-now.json', function(data) {
+		return data
+	})
+}
+
 var map;
+var IssData = getIssData();
 function initMap() {
-  var IssData = getIssData();
-  console.log(IssData)
+  console.log(getIssData());
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: IssData['iss_position']['latitude'], lng: IssData['iss_position']['longitude']},
     zoom: 8
   });
 }
 
-function getIssData() {
-	$.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
-		return data
-	})
-}
+
     </script>
     <!-- Key is set to only accept requests from this site. -->
 	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2lYc_Eb262K1WpruhiZU18Db2Dapm21o&callback=initMap" async defer></script>
