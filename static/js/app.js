@@ -1,7 +1,7 @@
 
 
 var main = function() {
-	console.log("Hi.")
+	console.log("Hi there.")
 }
 
 $(document).ready(main);

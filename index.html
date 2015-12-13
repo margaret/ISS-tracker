@@ -57,20 +57,18 @@
 var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -34.397, lng: 150.644},
+  	var data = getIssData();
+    center: {lat: data['iss_position']['latitude'], lng: data['iss_position']['longitude']},
     zoom: 8
   });
 }
 
-function getIssLocation() {
+function getIssData() {
 	$.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
 		console.log(data)
-		var lat = data['iss-position']['latitude'];
-		var lon = data['iss-position']['longitude'];
-		console.log(lat, lon)
+		return data
 	})
 }
-getIssLocation();
     </script>
     <!-- Key is set to only accept requests from this site. -->
 	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2lYc_Eb262K1WpruhiZU18Db2Dapm21o&callback=initMap" async defer></script>
