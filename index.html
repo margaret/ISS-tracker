@@ -64,9 +64,9 @@ function getIssPosition() {
 }
 
 function setIssPosition() {
-	console.log("updating ISS position")
 	$.getJSON(openNotifyEndpoint, function(data) {
 		var issPoint = {lat: latitude, lng: longitude};		
+		console.log("updating ISS position to " + issPoint.lat + ", " + issPoint.lng)
 		map.center = issPoint;
 		marker.setPosition(issPoint);
 	})
