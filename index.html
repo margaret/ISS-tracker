@@ -55,9 +55,12 @@
 	<script>
 
 function getIssData() {
-	$.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
+	console.log("before calling open-notify")
+	var issPosition = $.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
 		return data
-	})
+	});
+	console.log(issPosition)
+	return issPosition
 }
 
 var map;
