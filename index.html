@@ -55,15 +55,16 @@
 	<script>
 
 function getIssData() {
-	$.getJSON('http://api.open-notify.org/iss-now.json', function(data) {
+	$.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
 		return data
 	})
 }
 
 var map;
 var IssData = getIssData();
+
 function initMap() {
-  console.log(getIssData());
+  console.log(IssData);
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: IssData['iss_position']['latitude'], lng: IssData['iss_position']['longitude']},
     zoom: 8
