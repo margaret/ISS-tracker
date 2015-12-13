@@ -64,6 +64,7 @@ function initMap() {
 
 function getIssLocation() {
 	$.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
+		console.log(data)
 		var lat = data['iss-position']['latitude'];
 		var lon = data['iss-position']['longitude'];
 		console.log(lat, lon)
