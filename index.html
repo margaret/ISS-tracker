@@ -43,7 +43,7 @@
 				<br>
 				<p>Well, once this is implemented, anyway.</p>
 				<p>Hello world!</p>
-				<button type="button" class="btn btn-default btn-lg active" id="updateMap">Update</button>
+				<button type="button" class="btn btn-default btn-lg" id="updateMap">Update</button>
 				<div id="map"></div>
 			</div>
 		</div>
@@ -65,7 +65,7 @@ function getIssPosition() {
 
 function setIssPosition() {
 	$.getJSON(openNotifyEndpoint, function(data) {
-		var issPoint = {lat: latitude, lng: longitude};		
+		var issPoint = {lat: data.iss_position.latitude, lng: data.iss_position.longitude};		
 		console.log("updating ISS position to " + issPoint.lat + ", " + issPoint.lng)
 		map.center = issPoint;
 		marker.setPosition(issPoint);
