@@ -55,17 +55,17 @@
 	<script>
 
 var map;
+var IssData = getIssData();
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-  	var data = getIssData();
-    center: {lat: data['iss_position']['latitude'], lng: data['iss_position']['longitude']},
+    center: {lat: IssData['iss_position']['latitude'], lng: IssData['iss_position']['longitude']},
     zoom: 8
   });
 }
 
 function getIssData() {
 	$.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
-		console.log(data)
+		console.log(data);
 		return data
 	})
 }
