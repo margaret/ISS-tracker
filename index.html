@@ -44,10 +44,28 @@
 	<!-- <script src=/static/js/bootstrap.min.js></script> -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script type="text/javascript" src=./static/js/bootstrap.min.js></script>
-	<script type="text/javascript" src=./static/js/app.js></script>
 	<!-- Key is set to only accept requests from this site. -->
 	 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2lYc_Eb262K1WpruhiZU18Db2Dapm21o&callback=initMap" async defer></script>
+	<script type="text/javascript" src=./static/js/app.js></script>
+	<script type="text/javascript">
+		function initMap(latitude = -25.363, longitutde = 131.044) {
+		  var myLatLng = {lat: latitude, lng: longitutde};
 
+		  // Create a map object and specify the DOM element for display.
+		  var map = new google.maps.Map(document.getElementById('map'), {
+		    center: myLatLng,
+		    scrollwheel: false,
+		    zoom: 4
+		  });
+
+		  // Create a marker and set its position.
+		  var marker = new google.maps.Marker({
+		    map: map,
+		    position: myLatLng,
+		    title: 'Hello World!'
+		  });
+		}
+	</script>
 
 </body>
 </html>
