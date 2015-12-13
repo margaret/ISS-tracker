@@ -43,6 +43,7 @@
 				<br>
 				<p>Well, once this is implemented, anyway.</p>
 				<p>Hello world!</p>
+				<button type="button" class="btn btn-default btn-lg active" id="updateMap">Update</button>
 				<div id="map"></div>
 			</div>
 		</div>
@@ -55,13 +56,24 @@
 	<script>
 
 
+var openNotifyEndpoint = 'http://api.open-notify.org/iss-now.json?callback=?'
 function getIssPosition() {
-	$.getJSON('http://api.open-notify.org/iss-now.json?callback=?', function(data) {
+	$.getJSON(openNotifyEndpoint, function(data) {
 		initMap(data.iss_position.latitude, data.iss_position.longitude);
 	})
 }
 
+function setIssPosition() {
+	console.log("updating ISS position")
+	$.getJSON(openNotifyEndpoint, function(data) {
+		var issPoint = {lat: latitude, lng: longitude};		
+		map.center = issPoint;
+		marker.setPosition(issPoint);
+	})
+}
+
 var map;
+var marker;
 function initMap(latitude, longitude) {
   console.log(latitude, longitude)
   var issPoint = {lat: latitude, lng: longitude};
@@ -70,12 +82,14 @@ function initMap(latitude, longitude) {
     zoom: 4,
     scrollwheel: false
   });
-  // Create a marker and set its position.
-  var marker = new google.maps.Marker({
+  // Set marker position.
+  marker = new google.maps.Marker({
     map: map,
     position: issPoint,
-    title: 'ISS'
+    title: 'ISS is here!'
   });
+
+$("#updateMap").click(setIssPosition)
 
 }
 
