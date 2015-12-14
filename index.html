@@ -57,7 +57,7 @@
 					</div>
 				</form>
 				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
-
+				<br>
 				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
 				<br>
 
@@ -74,10 +74,11 @@
 
 
 var openNotifyEndpoint = 'http://api.open-notify.org/iss-now.json?callback=?'
+
 function getIssPosition() {
 	$.getJSON(openNotifyEndpoint, function(data) {
 		initMap(data.iss_position.latitude, data.iss_position.longitude);
-	})
+	});
 }
 
 function setIssPosition() {
@@ -86,7 +87,7 @@ function setIssPosition() {
 		console.log("updating ISS position to " + issPoint.lat + ", " + issPoint.lng)
 		map.setCenter(issPoint);
 		marker.setPosition(issPoint);
-	})
+	});
 }
 
 function parseLocation() {
@@ -112,8 +113,8 @@ function initMap(latitude, longitude) {
     title: 'ISS is here!'
   });
 
-$("#updateMap").click(setIssPosition)
-$("#getLocation").click(parseLocation)
+$("#updateMap").click(setIssPosition);
+$("#getLocation").click(parseLocation);
 
 }
 
