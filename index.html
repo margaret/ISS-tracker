@@ -46,8 +46,19 @@
 				<p>Hello world version of <a href="http://isstracker.com">ISS Tracker</a>. Mostly an exercise in web dev. In progress!</p>
 				<p>If you like space things, check out the NASA Johnson Space Center <a href="https://www.youtube.com/user/ReelNASA">YouTube channel.</a></p>
 				<p><a href="http://www.ustream.tv/channel/live-iss-stream">ISS Livestream</a></p>
-				
-				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update</button>
+
+				<h3>Add ISS Flyovers to Google Calendar</h3>
+				<p>This is in development.</p>
+				<p>Get notified when the ISS is flying overhead!</p>
+				<form>
+					<div class="form-group">
+						<label for="flyoverAddress">What city are you in?</label>
+    					<input type="address" class="form-control" id="flyoverAddress" placeholder="City, State, Country">
+					</div>
+				</form>
+				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
+
+				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
 				<br>
 
 				<div id="map"></div>
@@ -78,6 +89,11 @@ function setIssPosition() {
 	})
 }
 
+function parseLocation() {
+	console.log($("#flyoverAddress"));
+	console.log(typeof($("#flyoverAddress"))));
+	console.log(Object.keys($("#flyoverAddress")));
+}
 
 var map;
 var marker;
@@ -97,6 +113,7 @@ function initMap(latitude, longitude) {
   });
 
 $("#updateMap").click(setIssPosition)
+$("#getLocation").click(parseLocation)
 
 }
 
