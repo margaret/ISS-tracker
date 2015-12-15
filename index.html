@@ -52,12 +52,12 @@
 				<p>Get notified when the ISS is flying overhead!</p>
 				<form>
 					<div class="form-group">
-						<label for="flyoverAddress">What city are you in?</label>
+						<label for="flyoverAddress">Where are you?</label>
     					<input type="address" class="form-control" id="flyoverAddress" placeholder="City, State, Country">
 					</div>
 				</form>
 				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
-				<br><br> <!-- Yeah, I should add padding -->
+				<br><br> <!-- Yeah, I should just add padding -->
 				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
 				<br>
 
@@ -99,12 +99,25 @@ function geocodeLocation() {
       	console.log(results[0].geometry.location.toString());
       	console.log("Response 0 address:");
       	console.log(results[0].formatted_address);
+      	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng());
       } else {
       	console.log("Something went wrong.")
       	console.log(status);
       }
   })
 }
+
+function getPassTimes(lat, lon) {
+	// example from open-notify. Obvs will not work as is. 
+	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
+	    data['response'].forEach(function (d) {
+	        var date = new Date(d['risetime']*1000);
+	         // $('#isspass').append('<li>' + date.toString() + '</li>');
+	         console.log("ISS pass on ", date);
+	    });
+	});
+}
+
 
 var map;
 var marker;
