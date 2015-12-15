@@ -47,9 +47,9 @@
 				<p>If you like space things, check out the NASA Johnson Space Center <a href="https://www.youtube.com/user/ReelNASA">YouTube channel.</a></p>
 				<p><a href="http://www.ustream.tv/channel/live-iss-stream">ISS Livestream</a></p>
 
-				<h3>Add ISS Flyovers to Google Calendar</h3>
+				<h3>Find ISS Flyovers</h3>
 				<p>This is in development.</p>
-				<p>Get notified when the ISS is flying overhead!</p>
+				<p>When will the ISS fly over you?</p>
 				<form>
 					<div class="form-group">
 						<label for="flyoverAddress">Where are you?</label>
@@ -119,6 +119,7 @@ function getPassTimes(lat, lon, addr) {
 	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
 		var flyoverList = document.getElementById("passTimes");
 		flyoverList.innerHTML = '';
+		console.log($('#parsedAddress'));
 		$('#parsedAddress').text = 'Flyover times for ' + addr;
 	    data['response'].forEach(function (d) {
 	        var date = new Date(d['risetime']*1000);
