@@ -119,7 +119,7 @@ function getPassTimes(lat, lon, addr) {
 	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
 		var flyoverList = document.getElementById("passTimes");
 		flyoverList.innerHTML = '';
-		$('#parsedAddress').innerHTML = 'Flyover times for ' + addr;
+		$('#parsedAddress').text = 'Flyover times for ' + addr;
 	    data['response'].forEach(function (d) {
 	        var date = new Date(d['risetime']*1000);
 	         $('#passTimes').append('<li>' + date.toString() + '</li>');
