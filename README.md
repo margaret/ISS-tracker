@@ -8,7 +8,8 @@ Basic implementation of ISS tracking using Google Maps Javascript API and [Open 
 		* submit button and pressing enter (enter currently refreshes page.)
 	* grab info from form and feed city to Google Maps API geocoder and get coordinates
 	* feed coordinates to Open-Notify predictions
-	* display results
+		* display results
+		* double check quality of results / filter to be more similar to spot the station.
 
 * Add option to set google calendar notifications
 	* (need to check what this entails but probably this:)
