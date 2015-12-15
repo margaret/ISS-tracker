@@ -57,6 +57,7 @@
 					</div>
 				</form>
 				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
+				<br>
 				<ul id="passTimes">
 				</ul>
 				<br><br> <!-- Yeah, I should just add padding -->
@@ -106,8 +107,8 @@ function geocodeLocation() {
       	  document.getElementById('passTimes').innerHTML = '';
       	  $('#passTimes').append('<li>' + "No results for " + formVal + '</li>');
       } else {
-      	console.log("Something went wrong.")
-      	console.log(status);
+      	  document.getElementById('passTimes').innerHTML = '';
+      	  $('#passTimes').append('<li> Error: ' + status + '</li>' );
       }
   })
 }
