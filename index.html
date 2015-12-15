@@ -112,7 +112,7 @@ function geocodeLocation() {
 function getPassTimes(lat, lon) {
 	// example from open-notify. Obvs will not work as is. 
 	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
-		var flyoverList = document.getElementById("#passTimes");
+		var flyoverList = document.getElementById("passTimes");
 		flyoverList.innerHTML = '';
 	    data['response'].forEach(function (d) {
 	        var date = new Date(d['risetime']*1000);
