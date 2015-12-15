@@ -120,9 +120,10 @@ function initMap(latitude, longitude) {
     map: map,
     position: issPoint,
     title: 'ISS is here!'
-  geocoder = new google.maps.Geocoder();
   });
+  geocoder = new google.maps.Geocoder();
 
+// should these be in here or outside initMap?
 $("#updateMap").click(setIssPosition);
 $("#getLocation").click(parseLocation);
 
