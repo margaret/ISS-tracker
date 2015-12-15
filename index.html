@@ -89,14 +89,24 @@ function setIssPosition() {
 	});
 }
 
-function parseLocation() {
+function geocodeLocation() {
 	var formVal = document.getElementById("flyoverAddress").value;
-	console.log(formVal);
-	console.log(typeof(formVal));
+	console.log("Searched for: " + formVal);
+	geocoder.geocode({ 'address': formVal}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+      	console.log(results.length + " results");
+      	console.log("Response 0:");
+      	console.log(results[0]);
+      } else {
+      	console.log("Something went wrong.")
+      	console.log(status);
+      }
+  })
 }
 
 var map;
 var marker;
+var geocoder;
 function initMap(latitude, longitude) {
   console.log(latitude, longitude)
   var issPoint = {lat: latitude, lng: longitude};
@@ -110,6 +120,7 @@ function initMap(latitude, longitude) {
     map: map,
     position: issPoint,
     title: 'ISS is here!'
+  geocoder = new google.maps.Geocoder();
   });
 
 $("#updateMap").click(setIssPosition);

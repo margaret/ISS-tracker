@@ -4,8 +4,9 @@ Basic implementation of ISS tracking using Google Maps Javascript API and [Open 
 ## To-do
 
 * Add form to search for flyover predictions
-	* add form to html (autocomplete search box from API)
-	* grab info from form and feed city to Google Maps API and get coordinates
+	* add form to html (eventually upgrade to autocomplete search box from API)
+		* submit button and pressing enter (enter currently refreshes page.)
+	* grab info from form and feed city to Google Maps API geocoder and get coordinates
 	* feed coordinates to Open-Notify predictions
 	* display results
 
