@@ -59,8 +59,8 @@
 				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
 				<br><br>
 				<p id="parsedAddress"></p>
-				<ul id="passTimes">
-				</ul>
+				<table class="table table-condensed table-responsive table-hover" id="passTimes">
+				</table>
 				<br><br> <!-- Yeah, I should just add padding -->
 				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
 				<br>
@@ -106,16 +106,17 @@ function geocodeLocation() {
       	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng(), formVal);
       } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
       	  document.getElementById('passTimes').innerHTML = '';
-      	  $('#passTimes').append('<li>' + "No results for " + formVal + '</li>');
+      	  // $('#passTimes').append('<li>' + "No results for " + formVal + '</li>');
+      	  $('#passTimes').append('<tr><td>' + "No results for " + formVal + '</tr></td>');
       } else {
       	  document.getElementById('passTimes').innerHTML = '';
-      	  $('#passTimes').append('<li> Error: ' + status + '</li>' );
+      	  // $('#passTimes').append('<li> Error: ' + status + '</li>' );
+      	  $('#passTimes').append('<tr><td>Error: ' + status + '</td></tr>');
       }
   })
 }
 
-function getPassTimes(lat, lon, addr) {
-	// example from open-notify. Obvs will not work as is. 
+function getPassTimes(lat, lon, addr) { 
 	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
 		var flyoverList = document.getElementById("passTimes");
 		flyoverList.innerHTML = '';
@@ -123,7 +124,8 @@ function getPassTimes(lat, lon, addr) {
 		$('#parsedAddress').text = 'Flyover times for ' + addr;
 	    data['response'].forEach(function (d) {
 	        var date = new Date(d['risetime']*1000);
-	         $('#passTimes').append('<li>' + date.toString() + '</li>');
+	         // $('#passTimes').append('<li>' + date.toString() + '</li>');
+	         $('#passTimes').append('<tr><td>' + date.toString() + '</td></tr>');
 	         console.log("ISS pass on ", date.toString());
 	    });
 	});
