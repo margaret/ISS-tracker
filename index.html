@@ -123,8 +123,9 @@ function getPassTimes(lat, lon, addr, formattedAddr) {
 		$('#passTimes').append('<tr><th>Flyover times for ' + formattedAddr + '</th></tr>')
 	    data['response'].forEach(function (d) {
 	        var date = new Date(d['risetime']*1000);
+	        var duration = d['duration']
 	         // $('#passTimes').append('<li>' + date.toString() + '</li>');
-	         $('#passTimes').append('<tr><td>' + date.toString() + '</td></tr>');
+	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + duration + '</td></tr>');
 	         console.log("ISS pass on ", date.toString());
 	    });
 	});
