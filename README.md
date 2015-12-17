@@ -3,8 +3,7 @@ Basic implementation of ISS tracking using Google Maps Javascript API and [Open 
 
 ## To-do
 
-###General
-* Figure out how to set up a dev env
+### General
 * Refactor 
 
 ### Flyover Predictions
