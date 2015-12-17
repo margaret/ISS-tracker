@@ -43,13 +43,12 @@
 			<div class="col-md-6 col-md-offset-3">
 				<h1>Track the ISS</h1>
 				<br>
-				<p>Hello world version of <a href="http://isstracker.com">ISS Tracker</a>. Mostly an exercise in web dev. In progress!</p>
+				<p>Hello world version of <a href="http://isstracker.com">ISS Tracker</a>. Mostly an exercise in web dev. Data from <a href="http://open-notify.org/">Open Notify</a>.</p>
 				<p>If you like space things, check out the NASA Johnson Space Center <a href="https://www.youtube.com/user/ReelNASA">YouTube channel.</a></p>
 				<p><a href="http://www.ustream.tv/channel/live-iss-stream">ISS Livestream</a></p>
 
 				<h3>Find ISS Flyovers</h3>
-				<p>This is in development.</p>
-				<p>When will the ISS fly over you?</p>
+				<p>For the real deal, check out <a href="http://spotthestation.nasa.gov/">NASA's Spot the Station site.</a></p>
 				<form>
 					<div class="form-group">
 						<label for="flyoverAddress">Where are you?</label>
@@ -58,9 +57,8 @@
 				</form>
 				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
 				<br><br>
-				<p id="parsedAddress"></p>
-				<ul id="passTimes">
-				</ul>
+				<table class="table table-condensed table-responsive table-hover" id="passTimes">
+				</table>
 				<br><br> <!-- Yeah, I should just add padding -->
 				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
 				<br>
@@ -103,27 +101,31 @@ function geocodeLocation() {
       	console.log(results[0].geometry.location.toString());
       	console.log("Response 0 address:");
       	console.log(results[0].formatted_address);
-      	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng(), formVal);
+
+      	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng(), formVal, results[0].formatted_address);
+
       } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
       	  document.getElementById('passTimes').innerHTML = '';
-      	  $('#passTimes').append('<li>' + "No results for " + formVal + '</li>');
+      	  $('#passTimes').append('<tr><td>' + "No results for " + formVal + '</tr></td>');
       } else {
       	  document.getElementById('passTimes').innerHTML = '';
-      	  $('#passTimes').append('<li> Error: ' + status + '</li>' );
+      	  $('#passTimes').append('<tr><td>Error: ' + status + '</td></tr>');
       }
   })
 }
 
-function getPassTimes(lat, lon, addr) {
-	// example from open-notify. Obvs will not work as is. 
+function getPassTimes(lat, lon, addr, formattedAddr) { 
 	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
 		var flyoverList = document.getElementById("passTimes");
 		flyoverList.innerHTML = '';
-		console.log($('#parsedAddress'));
-		$('#parsedAddress').text = 'Flyover times for ' + addr;
+		$('#passTimes').append('<tr><th>Flyover times for ' + formattedAddr + '</th><<th>Duration</th>/tr>')
 	    data['response'].forEach(function (d) {
+	    	console.log(d);
 	        var date = new Date(d['risetime']*1000);
-	         $('#passTimes').append('<li>' + date.toString() + '</li>');
+	        var duration = d['duration'];
+	        var minutes = Math.floor(duration / 60);
+	        var seconds = duration - (minutes * 60);
+	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + minutes + ' m ' + seconds + ' s</td></tr>');
 	         console.log("ISS pass on ", date.toString());
 	    });
 	});
@@ -152,6 +154,16 @@ function initMap(latitude, longitude) {
 // should these be in here or outside initMap?
 $("#updateMap").click(setIssPosition);
 $("#getLocation").click(geocodeLocation);
+$('#flyoverAddress').keypress(function(e) {
+	var event = e || window.event;
+	var charCode = event.which || event.keyCode;
+	if (charCode == '13') {
+		event.preventDefault();
+		geocodeLocation();
+		console.log("Pressed enter.")
+	}
+})
+
 
 }
 
