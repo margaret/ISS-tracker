@@ -102,7 +102,9 @@ function geocodeLocation() {
       	console.log(results[0].geometry.location.toString());
       	console.log("Response 0 address:");
       	console.log(results[0].formatted_address);
-      	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng(), formVal);
+
+      	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng(), formVal, results[0].formatted_address);
+
       } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
       	  document.getElementById('passTimes').innerHTML = '';
       	  // $('#passTimes').append('<li>' + "No results for " + formVal + '</li>');
@@ -115,11 +117,11 @@ function geocodeLocation() {
   })
 }
 
-function getPassTimes(lat, lon, addr) { 
+function getPassTimes(lat, lon, addr, formattedAddr) { 
 	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
 		var flyoverList = document.getElementById("passTimes");
 		flyoverList.innerHTML = '';
-		$('#passTimes').append('<tr><th>Flyover times for ' + addr + '</th></tr>')
+		$('#passTimes').append('<tr><th>Flyover times for ' + formattedAddr + '</th></tr>')
 	    data['response'].forEach(function (d) {
 	        var date = new Date(d['risetime']*1000);
 	         // $('#passTimes').append('<li>' + date.toString() + '</li>');
