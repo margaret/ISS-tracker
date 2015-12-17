@@ -156,9 +156,10 @@ $("#updateMap").click(setIssPosition);
 $("#getLocation").click(geocodeLocation);
 $('#flyoverAddress').keypress(function(e) {
 	var event = e || window.event;
+	event.preventDefault();
 	var charCode = event.which || event.keyCode;
 	if (charCode == '13') {
-		// geocodeLocation();
+		geocodeLocation();
 		console.log("Pressed enter.")
 	}
 })
