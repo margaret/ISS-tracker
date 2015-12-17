@@ -106,11 +106,9 @@ function geocodeLocation() {
 
       } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
       	  document.getElementById('passTimes').innerHTML = '';
-      	  // $('#passTimes').append('<li>' + "No results for " + formVal + '</li>');
       	  $('#passTimes').append('<tr><td>' + "No results for " + formVal + '</tr></td>');
       } else {
       	  document.getElementById('passTimes').innerHTML = '';
-      	  // $('#passTimes').append('<li> Error: ' + status + '</li>' );
       	  $('#passTimes').append('<tr><td>Error: ' + status + '</td></tr>');
       }
   })
@@ -125,8 +123,9 @@ function getPassTimes(lat, lon, addr, formattedAddr) {
 	    	console.log(d);
 	        var date = new Date(d['risetime']*1000);
 	        var duration = d['duration'];
-	         // $('#passTimes').append('<li>' + date.toString() + '</li>');
-	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + duration/60 + '</td></tr>');
+	        var minutes = Math.floor(duration / 60);
+	        var seconds = duration - (minutes * 60);
+	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + minutes + ':' + seconds + '</td></tr>');
 	         console.log("ISS pass on ", date.toString());
 	    });
 	});
