@@ -120,13 +120,13 @@ function getPassTimes(lat, lon, addr, formattedAddr) {
 	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=5&callback=?', function(data) {
 		var flyoverList = document.getElementById("passTimes");
 		flyoverList.innerHTML = '';
-		$('#passTimes').append('<tr><th>Flyover times for ' + formattedAddr + '</th></tr>')
+		$('#passTimes').append('<tr><th>Flyover times for ' + formattedAddr + '</th><<th>Duration (minutes)</th>/tr>')
 	    data['response'].forEach(function (d) {
 	    	console.log(d);
 	        var date = new Date(d['risetime']*1000);
 	        var duration = d['duration'];
 	         // $('#passTimes').append('<li>' + date.toString() + '</li>');
-	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + duration + '</td></tr>');
+	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + duration/60 + '</td></tr>');
 	         console.log("ISS pass on ", date.toString());
 	    });
 	});
