@@ -125,7 +125,7 @@ function getPassTimes(lat, lon, addr, formattedAddr) {
 	        var duration = d['duration'];
 	        var minutes = Math.floor(duration / 60);
 	        var seconds = duration - (minutes * 60);
-	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + minutes + ':' + seconds + '</td></tr>');
+	         $('#passTimes').append('<tr><td>' + date.toString() + '</td><td>' + minutes + 'm ' + seconds + 's</td></tr>');
 	         console.log("ISS pass on ", date.toString());
 	    });
 	});

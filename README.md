@@ -3,9 +3,14 @@ Basic implementation of ISS tracking using Google Maps Javascript API and [Open 
 
 ## To-do
 
+###General
+* Figure out how to set up a dev env
+* Refactor 
+
 ### Flyover Predictions
 * double check quality of results / filter to be more similar to spot the station?
 * see about fixing bug https://github.com/open-notify/Open-Notify-API/issues/5 or at least adding error message when 500 response received. 
+* zero-pad duration
 
 ### Notifications
 * (need to check what this entails but probably this:)
