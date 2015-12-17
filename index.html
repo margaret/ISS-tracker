@@ -154,6 +154,14 @@ function initMap(latitude, longitude) {
 // should these be in here or outside initMap?
 $("#updateMap").click(setIssPosition);
 $("#getLocation").click(geocodeLocation);
+$('#flyoverAddress').keypress(function(e) {
+	var event = e || window.event;
+	var charCode = event.which || event.keyCode;
+	if (charCode == '13') {
+		geocodeLocation();
+	}
+})
+
 
 }
 
