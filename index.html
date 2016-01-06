@@ -42,31 +42,32 @@
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
 				<h1>Track the ISS</h1>
-				<br>
-				<p>Hello world version of <a href="http://isstracker.com">ISS Tracker</a>. Mostly an exercise in web dev. Data from <a href="http://open-notify.org/">Open Notify</a>.</p>
-				<p>If you like space things, check out the NASA Johnson Space Center <a href="https://www.youtube.com/user/ReelNASA">YouTube channel.</a></p>
-				<p><a href="http://www.ustream.tv/channel/live-iss-stream">ISS Livestream</a></p>
+					<br>
+					<p>My implementation of an <a href="http://isstracker.com">ISS Tracker</a> using data from <a href="http://open-notify.org/">Open Notify</a>.</p>
+					<p>If you like space things, check out the NASA Johnson Space Center <a href="https://www.youtube.com/user/ReelNASA">YouTube channel.</a></p>
+					<p><a href="http://www.ustream.tv/channel/live-iss-stream">ISS Livestream</a></p>
 
 				<h3>Find ISS Flyovers</h3>
-				<p>For the real deal, check out <a href="http://spotthestation.nasa.gov/">NASA's Spot the Station site.</a></p>
-				<form>
-					<div class="form-group">
-						<label for="flyoverAddress">Where are you?</label>
-    					<input type="address" class="form-control" id="flyoverAddress" placeholder="City, State, Country">
-					</div>
-				</form>
+					<p>For the real deal, check out <a href="http://spotthestation.nasa.gov/">NASA's Spot the Station site.</a></p>
+					<p>Note that Spot the Station only seems to display morning passes. I haven't played enough Kerbal Space Program to figure out why the times are slightly different, but STS pass predictions usually start 5 to 10 minutes later and shorter than Open-Notify's. I suspect they start counting "visible" at a higher angle from the horizon than Open Notify does.</p>
+					<form>
+						<div class="form-group">
+							<label for="flyoverAddress">Where are you?</label>
+	    					<input type="address" class="form-control" id="flyoverAddress" placeholder="City, State, Country">
+						</div>
+					</form>
+					<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
+					<br><br>
 				
-				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
-				<br><br>
+					<table class="table table-condensed table-responsive table-hover" id="passTimes">
+					</table>
+
 				
-				<table class="table table-condensed table-responsive table-hover" id="passTimes">
-				</table>
+				<h3>Current Location</h3>
+					<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
+					<br>
 
-				<br><br> <!-- Yeah, I should just add padding -->
-				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
-				<br>
-
-				<div id="map"></div>
+					<div id="map"></div>
 			</div>
 		</div>
 	</nav>

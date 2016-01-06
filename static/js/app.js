@@ -103,6 +103,7 @@ function displayPassTimes(data, formattedAddr) {
         	$('#passTimes').append('<tr class=warning><td>' + date.toString() + '</td><td>' + minutes + ' m ' + seconds + ' s</td></tr>');
         }
     });
+	// Color Key
 	$('#passTimes').append('<tr><th>Key</th></tr><tr><td class="success"><small>Nighttime</small></tr><td class="warning"><small>Before sunrise</small><tr><td class="info"><small>Lol nope</small></tr><tr></tr>')
 }
 
