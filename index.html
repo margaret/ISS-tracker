@@ -55,10 +55,13 @@
     					<input type="address" class="form-control" id="flyoverAddress" placeholder="City, State, Country">
 					</div>
 				</form>
+				
 				<button type="submit" class="btn btn-default" id="getLocation">Get flyover times</button>
 				<br><br>
+				
 				<table class="table table-condensed table-responsive table-hover" id="passTimes">
 				</table>
+
 				<br><br> <!-- Yeah, I should just add padding -->
 				<button type="button" class="btn btn-primary btn-lg" id="updateMap">Update Map</button>
 				<br>
@@ -70,6 +73,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script type="text/javascript" src=./static/js/bootstrap.min.js></script>
+	<script type="text/javascript" src=./static/js/suncalc.js></script>
 	<script type="text/javascript" src=./static/js/app.js></script>
 	<!-- Key is set to only accept requests from this site. -->
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2lYc_Eb262K1WpruhiZU18Db2Dapm21o&callback=getIssPosition" async defer></script>
