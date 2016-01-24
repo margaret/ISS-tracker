@@ -64,12 +64,28 @@
 				
 					<table class="table table-condensed table-responsive table-hover" id="passTimes">
 					</table>
+					<table class="table table-condensed table-responsive" id="key">
+						<tr>
+							<th>Key</th>
+						</tr>
+						<tr>
+							<td class="success"><small>Nighttime</small>
+						</tr>
+						<tr>
+							<td class="warning"><small>Before sunrise</small></td>
+						</tr>
+						<tr>
+							<td class="danger"><small>Daylight</small></td>
+						</tr>
+					</table>
 
-				<h4>Known Issues</h4>
+				<h4>Issues</h4>
 				<ul>
-					<li>Filter always uses PST timezone, so it's totally not helpful when you're searching locations elsewhere.</li>
+					<li>Flyover times load out of order from async calls. Gotta do <a href="http://stackoverflow.com/questions/24111578/how-can-i-order-the-results-of-several-async-jquery-queries">this</a></li>
 					<li>I dunno how I feel about this layout. On mobile the map takes up so much of the screen it's a little hard to scroll back up.</li>
-					<li>Still adding features!</li>
+					<li>Eventually would like to add weather info.</li>
+					<li>Should probably hide the table key if the table isn't populated yet.</li>
+					<li>Need to handle error when open-notify vomits 500 error XML and getJSON fails silently. Tried fixing the error handling but until my <a href="https://github.com/open-notify/Open-Notify-API/pull/7">pull request</a> is merged, will need to do something like <a href="http://stackoverflow.com/questions/1740218/error-handling-in-getjson-calls">this</a>.</li>
 				</ul>
 
 			</div>
@@ -86,6 +102,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script type="text/javascript" src=./static/js/bootstrap.min.js></script>
 	<script type="text/javascript" src=./static/js/suncalc.js></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.0/moment-timezone-with-data.min.js"></script>
 	<script type="text/javascript" src=./static/js/app.js></script>
 	<!-- Key is set to only accept requests from this site. -->
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC2lYc_Eb262K1WpruhiZU18Db2Dapm21o&callback=getIssPosition" async defer></script>

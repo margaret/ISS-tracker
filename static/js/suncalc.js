@@ -298,7 +298,6 @@ if (typeof define === 'function' && define.amd) {
 } else if (typeof module !== 'undefined') {
     module.exports = SunCalc;
 } else {
-    console.log("browser!")
     window.SunCalc = SunCalc;
 }
 

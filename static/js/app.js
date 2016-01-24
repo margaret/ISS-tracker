@@ -1,4 +1,6 @@
 var SunCalc = window.SunCalc;
+var moment = window.moment;
+// Current ISS Location 
 var map;
 var marker;
 var geocoder;
@@ -19,6 +21,7 @@ function initMap(latitude, longitude) {
   geocoder = new google.maps.Geocoder();
 }
 
+// Actions
 $("#updateMap").click(setIssPosition);
 $("#getLocation").click(geocodeLocation);
 $('#flyoverAddress').keypress(function(e) {
@@ -28,8 +31,9 @@ $('#flyoverAddress').keypress(function(e) {
 		event.preventDefault();
 		geocodeLocation();
 	}
-})
+});
 
+// Current Location
 var openNotifyEndpoint = 'http://api.open-notify.org/iss-now.json?callback=?'
 
 function getIssPosition() {
@@ -41,12 +45,14 @@ function getIssPosition() {
 function setIssPosition() {
 	$.getJSON(openNotifyEndpoint, function(data) {
 		var issPoint = {lat: data.iss_position.latitude, lng: data.iss_position.longitude};		
-		console.log("updating ISS position to " + issPoint.lat + ", " + issPoint.lng)
+		console.log("updating ISS position to " + issPoint.lat + ", " + issPoint.lng);
 		map.setCenter(issPoint);
 		marker.setPosition(issPoint);
 	});
 }
 
+
+// Flyovers
 function geocodeLocation() {
 	var formVal = document.getElementById("flyoverAddress").value;
 	console.log("Searched for: " + formVal);
@@ -57,7 +63,7 @@ function geocodeLocation() {
       	console.log(results[0].geometry.location.toString());
       	console.log("Response 0 address:");
       	console.log(results[0].formatted_address);
-
+        console.log("getting pass times")
       	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng(), formVal, results[0].formatted_address);
 
       } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
@@ -71,12 +77,15 @@ function geocodeLocation() {
 }
 
 function getPassTimes(lat, lon, addr, formattedAddr) { 
-	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=20&callback=?', function(data) {
-		displayPassTimes(data, formattedAddr)
+	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=10&callback=?', function(data) {
+    console.log("displaying pass times")
+		displayPassTimes(data, formattedAddr);
 	});
 }
 
 function displayPassTimes(data, formattedAddr) {
+  console.log("PASS TIMES DATA")
+  console.log(data)
 	var flyoverList = document.getElementById("passTimes");
 	flyoverList.innerHTML = '';
 	$('#passTimes').append('<tr><th>Flyover times for ' + formattedAddr + '</th><th>Duration</th></tr>');
@@ -85,26 +94,53 @@ function displayPassTimes(data, formattedAddr) {
     data['response'].forEach(function (d) {
         var date = new Date(d['risetime']*1000);
         var duration = d['duration'];
-        var minutes = Math.floor(duration / 60);
-        var seconds = duration - (minutes * 60);
+        var minutes = padString(Math.floor(duration / 60), 2, "0", "left");
+        var seconds = padString(duration - (minutes * 60), 2, "0", "left");
         console.log("-------------------------------------------");
-		console.log("ISS pass on ", date.toString());
+		    console.log("ISS pass on ", date.toString());
         if (isNighttime(lat, lon, date)) {
-        	console.log("night");
-        	if (isHellaEarly(date)) {
-        		console.log("Ain't nobody getting up that early.");
-        		$('#passTimes').append('<tr class=info><td>' + date.toString() + '</td><td>' + minutes + ' m ' + seconds + ' s</td></tr>');	
-        	} else {
-        		console.log("It's all good.");
-        		$('#passTimes').append('<tr class=success><td>' + date.toString() + '</td><td>' + minutes + ' m ' + seconds + ' s</td></tr>');
-        	}
+            constructTableRow(lat, lon, date, "success", minutes, seconds);
         } else if (isBeforeDawn(lat, lon, date)) {
-        	console.log("dawn " + date);
-        	$('#passTimes').append('<tr class=warning><td>' + date.toString() + '</td><td>' + minutes + ' m ' + seconds + ' s</td></tr>');
+        	// $('#passTimes').append('<tr class=warning><td>' + dateWithTZ(date, lat, lon) + '</td><td>' + minutes + ' m ' + seconds + ' s</td></tr>');
+          constructTableRow(lat, lon, date, "warning", minutes, seconds);
+        } else { // daylight hours
+          constructTableRow(lat, lon, date, "danger", minutes, seconds);
         }
     });
-	// Color Key
-	$('#passTimes').append('<tr><th>Key</th></tr><tr><td class="success"><small>Nighttime</small></tr><td class="warning"><small>Before sunrise</small><tr><td class="info"><small>Lol nope</small></tr><tr></tr>')
+}
+
+function constructTableRow(lat, lon, date, category, min, sec) {
+  // insert the time and duration of a flyover with the correct timezone 
+  // and color coding for time of day
+  var rowStart = '<tr class=' + category + '><td>';
+  var rowEnd = '</td><td>' + min + ' m ' + sec + ' s</td></tr>';
+  var utc = date.getTime() / 1000
+  $.getJSON("https://maps.googleapis.com/maps/api/timezone/json?location=" + lat + "," + lon + "&timestamp=" + utc + "&key=AIzaSyD_dcaNAV2gnklaTsJrQko6m27_NV6X7bs", function(data) {
+    console.log(data)
+    if (data['status'] == 'OK') {
+      var tz = data['timeZoneId'];
+      var correctedDate = moment.tz(utc*1000, tz).format("ddd, MMM Do YYYY, hh:mm:ss a Z") + " GMT";
+      console.log(correctedDate);
+      $('#passTimes').append(rowStart + correctedDate + rowEnd);
+    } else if (data['status'] == 'OVER_QUERY_LIMIT') {
+      $('#passTimes').append(rowStart + "Sorry, we're over our timezone API limit" + rowEnd);
+    } else {
+      $('#passTimes').append(rowStart + "Sorry, this feature is broken right now :(" + rowEnd);
+    }
+  })
+}
+
+// Helper methods
+function padString(num, width, pad, side) {
+  var padded = num.toString();
+  while (padded.length < width) {
+    if (side == "left") {
+      padded = pad + padded;
+    } else {
+      padded = padded + pad;
+    }
+  }
+  return padded
 }
 
 function isNighttime(lat, lon, date) {
@@ -118,13 +154,3 @@ function isBeforeDawn(lat, lon, date) {
 	var times = SunCalc.getTimes(date, lat, lon);
 	return (times.nightEnd < date) && (date < times.dawn);
 }
-
-function isHellaEarly(date) {
-	// This is all in local time
-	var fiveAM = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 5);
-	var twoAM = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 2);
-	console.log("should be 2am: " + twoAM);
-	console.log("ostensibly 5am: " + fiveAM)
-	return (twoAM < date) && (date < fiveAM);
-}
-
