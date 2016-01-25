@@ -1,3 +1,4 @@
+var author = "margaret";
 var SunCalc = window.SunCalc;
 var moment = window.moment;
 // Current ISS Location 
@@ -112,18 +113,21 @@ function displayPassTimes(data, formattedAddr) {
 function constructTableRow(lat, lon, date, category, min, sec) {
   // insert the time and duration of a flyover with the correct timezone 
   // and color coding for time of day
+  // I feel like I should move the timezone query outside since you really 
+  // only need to do it once, but I'm still having a hard time thinking in 
+  // terms of callbacks
   var rowStart = '<tr class=' + category + '><td>';
   var rowEnd = '</td><td>' + min + ' m ' + sec + ' s</td></tr>';
   var utc = date.getTime() / 1000
-  $.getJSON("https://maps.googleapis.com/maps/api/timezone/json?location=" + lat + "," + lon + "&timestamp=" + utc + "&key=AIzaSyD_dcaNAV2gnklaTsJrQko6m27_NV6X7bs", function(data) {
+  console.log("getting timezone info");
+  // I am aware this is bad practice. If I wasn't hosting on static pages I'd read it in from a non-public file. 
+  $.getJSON("http://api.geonames.org/timezoneJSON?lat=" + lat + "&lng=" + lon + "&username=" + author, function(data) {
     console.log(data)
-    if (data['status'] == 'OK') {
-      var tz = data['timeZoneId'];
+    if (!('status' in data)) {
+      var tz = data['timezoneId'];
       var correctedDate = moment.tz(utc*1000, tz).format("ddd, MMM Do YYYY, hh:mm:ss a Z") + " GMT";
       console.log(correctedDate);
       $('#passTimes').append(rowStart + correctedDate + rowEnd);
-    } else if (data['status'] == 'OVER_QUERY_LIMIT') {
-      $('#passTimes').append(rowStart + "Sorry, we're over our timezone API limit" + rowEnd);
     } else {
       $('#passTimes').append(rowStart + "Sorry, this feature is broken right now :(" + rowEnd);
     }
