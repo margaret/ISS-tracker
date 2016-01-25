@@ -102,7 +102,6 @@ function displayPassTimes(data, formattedAddr) {
         if (isNighttime(lat, lon, date)) {
             constructTableRow(lat, lon, date, "success", minutes, seconds);
         } else if (isBeforeDawn(lat, lon, date)) {
-        	// $('#passTimes').append('<tr class=warning><td>' + dateWithTZ(date, lat, lon) + '</td><td>' + minutes + ' m ' + seconds + ' s</td></tr>');
           constructTableRow(lat, lon, date, "warning", minutes, seconds);
         } else { // daylight hours
           constructTableRow(lat, lon, date, "danger", minutes, seconds);
@@ -125,12 +124,14 @@ function constructTableRow(lat, lon, date, category, min, sec) {
     console.log(data)
     if (!('status' in data)) {
       var tz = data['timezoneId'];
-      var correctedDate = moment.tz(utc*1000, tz).format("ddd, MMM Do YYYY, hh:mm:ss a Z") + " GMT";
+      var queryMoment = moment.tz(utc*1000, tz)
+      var correctedDate = queryMoment.format("ddd, MMM Do YYYY, hh:mm:ss a");
       console.log(correctedDate);
       $('#passTimes').append(rowStart + correctedDate + rowEnd);
     } else {
       $('#passTimes').append(rowStart + "Sorry, this feature is broken right now :(" + rowEnd);
     }
+    $('#tzInfo').text("All times for " + queryMoment.format("Z") + " GMT");
   })
 }
 
