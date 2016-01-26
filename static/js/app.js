@@ -102,11 +102,11 @@ function displayPassTimes(data, formattedAddr) {
         console.log("-------------------------------------------");
 		    console.log("ISS pass on ", date.toString());
         if (isNighttime(lat, lon, date)) {
-            constructTableRow(lat, lon, date, "success", minutes, seconds);
+            constructTableRow(lat, lon, date, "success", minutes, seconds, formattedAddr);
         } else if (isBeforeDawn(lat, lon, date)) {
-          constructTableRow(lat, lon, date, "warning", minutes, seconds);
+          constructTableRow(lat, lon, date, "warning", minutes, seconds, formattedAddr);
         } else { // daylight hours
-          constructTableRow(lat, lon, date, "danger", minutes, seconds);
+          constructTableRow(lat, lon, date, "danger", minutes, seconds, formattedAddr);
         }
     });
 }
@@ -118,11 +118,15 @@ function calendarLink(startTime, durationMinutes, durationSeconds, tz, humanAddr
   
   // Why doesn't built-in URI encoding handle punctuation
 
-  // startTime is a moment-timezone object
+  // startTime is a moment-timezone object.
   // calendar time should be in UTC
   var beginTime = startTime.format("YYYYMMDD") + "T" + startTime.format() + "Z"
   var urlBase = "https://www.google.com/calendar/render?action=TEMPLATE&text=ISS+Flyover&details=International+Space+Station+flyover!+Via+http://margaretsy.com/ISS-tracker&output=xml" 
-  var dates = makeEventDates(beginTime, durationMinutes, durationSeconds);
+  var begin = startTime.utc().year() + padString(startTime.utc().month()+1, 2, '0', 'left') + startTime.utc().date() + "T" + padString(startTime.utc().hour(), 2, '0', 'left') + padString(startTime.utc().minute(), 2, '0', 'left') + '00Z';
+  var endMoment = startTime.add(parseInt(durationMinutes), 'minutes').add(parseInt(durationSeconds), 'seconds');
+  var end = endMoment.utc().year() + padString(endMoment.utc().month()+1, 2, '0', 'left') + endMoment.utc().date() + "T" + padString(endMoment.utc().hour(), 2, '0', 'left') + padString(endMoment.utc().minute(), 2, '0', 'left') + '00Z';
+  var dates = "&dates=" + begin + "/" + end;
+  // var dates = makeEventDates(beginTime, durationMinutes, durationSeconds);
   var location = "&location=" + humanAddr.split(' ').join('+');
   var timezone = "&ctz=" + tz;
   return urlBase + dates + location + timezone;
@@ -131,13 +135,15 @@ function calendarLink(startTime, durationMinutes, durationSeconds, tz, humanAddr
 function makeEventDates(start, minutes, seconds) {
   // prob could separate out the construction and just pass in the date/moment
   // I'm tired of this
-  var begin = start.utc().year() + padString(start.utc().month()+1, 2, '0', 'left') + start.utc().date() + "T" + padString(tart.utc().hour(), 2, '0', 'left') + padString(start.utc().minute(), 2, '0', 'left') + '00Z';
+  // Actually for some reason it keeps insisting that utc() isn't a method when called from calendarLink,
+  // even though it works by itself? Something about dynamically assigned methods.
+  var begin = start.utc().year() + padString(start.utc().month()+1, 2, '0', 'left') + start.utc().date() + "T" + padString(start.utc().hour(), 2, '0', 'left') + padString(start.utc().minute(), 2, '0', 'left') + '00Z';
   var endMoment = start.add(parseInt(minutes), 'minutes').add(parseInt(seconds), 'seconds');
   var end = endMoment.utc().year() + padString(endMoment.utc().month()+1, 2, '0', 'left') + endMoment.utc().date() + "T" + padString(endMoment.utc().hour(), 2, '0', 'left') + padString(endMoment.utc().minute(), 2, '0', 'left') + '00Z';
   return "&dates=" + begin + "/" + end
 }
 
-function constructTableRow(lat, lon, date, category, min, sec) {
+function constructTableRow(lat, lon, date, category, min, sec, address) {
   // insert the time and duration of a flyover with the correct timezone 
   // and color coding for time of day
   // I feel like I should move the timezone query outside since you really 
@@ -152,10 +158,10 @@ function constructTableRow(lat, lon, date, category, min, sec) {
     console.log(data)
     if (!('status' in data)) {
       var tz = data['timezoneId'];
-      var queryMoment = moment.tz(utc, tz)
+      var queryMoment = moment.tz(utc, tz);
       var correctedDate = queryMoment.format("ddd, MMM Do YYYY, hh:mm:ss a");
       console.log(correctedDate);
-      var dateWithLink = "<a href='" + calendarLink(queryMoment, min, sec, tz, "Below the ISS") + "'>" + correctedDate + "</a>";
+      var dateWithLink = "<a target='_blank' href='" + calendarLink(moment(queryMoment), min, sec, tz, address) + "'>" + correctedDate + "</a>";
       $('#passTimes').append(rowStart + dateWithLink + rowEnd);
     } else {
       $('#passTimes').append(rowStart + "Sorry, this feature is broken right now :(" + rowEnd);
