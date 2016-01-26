@@ -82,9 +82,9 @@
 					</table>
 				<h4>Issues</h4>
 				<ul>
-					<li>Flyover times load out of order from async calls. Gotta do <a href="http://stackoverflow.com/questions/24111578/how-can-i-order-the-results-of-several-async-jquery-queries">this</a>. Which is probably gonna take a little awhile because what are promises.</li>
+					<li>Flyover times load out of order from async calls (except on Chrome. Go Chrome.). Gotta do <a href="http://stackoverflow.com/questions/24111578/how-can-i-order-the-results-of-several-async-jquery-queries">this</a>. Which is probably gonna take a little awhile because what are promises.</li>
 					<li>I dunno how I feel about this layout. On mobile the map takes up so much of the screen it's a little hard to scroll back up, and this list is displayed before the current location map.</li>
-					<li>Add weather info.</li>
+					<li>Add weather info. No point in watching if it's overcast!</li>
 					<li>Hide the table key if the table isn't populated yet.</li>
 					<li>Need to handle error when open-notify vomits 500 error XML and getJSON fails silently. Tried fixing the error handling but until my <a href="https://github.com/open-notify/Open-Notify-API/pull/7">pull request</a> is merged, will need to do something like <a href="http://stackoverflow.com/questions/1740218/error-handling-in-getjson-calls">this</a>.</li>
 				</ul>
