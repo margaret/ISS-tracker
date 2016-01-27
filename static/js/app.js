@@ -46,7 +46,6 @@ function getIssPosition() {
 function setIssPosition() {
 	$.getJSON(openNotifyEndpoint, function(data) {
 		var issPoint = {lat: data.iss_position.latitude, lng: data.iss_position.longitude};		
-		console.log("updating ISS position to " + issPoint.lat + ", " + issPoint.lng);
 		map.setCenter(issPoint);
 		marker.setPosition(issPoint);
 	});
@@ -56,15 +55,8 @@ function setIssPosition() {
 // Flyovers
 function geocodeLocation() {
 	var formVal = document.getElementById("flyoverAddress").value;
-	console.log("Searched for: " + formVal);
 	geocoder.geocode({ 'address': formVal}, function(results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
-      	console.log(results.length + " results");
-      	console.log("Response 0 Coordinates:");
-      	console.log(results[0].geometry.location.toString());
-      	console.log("Response 0 address:");
-      	console.log(results[0].formatted_address);
-        console.log("getting pass times")
       	getPassTimes(results[0].geometry.location.lat(), results[0].geometry.location.lng(), formVal, results[0].formatted_address);
 
       } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
@@ -78,22 +70,20 @@ function geocodeLocation() {
 }
 
 function getPassTimes(lat, lon, addr, formattedAddr) { 
-	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=15&callback=?', function(data) {
-    console.log("displaying pass times")
+	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=50&callback=?', function(data) {
 		displayPassTimes(data, formattedAddr);
 	});
 }
 
 
 function displayPassTimes(data, formattedAddr) {
-  console.log("PASS TIMES DATA")
-  console.log(data)
 	var flyoverList = document.getElementById("passTimes");
 	flyoverList.innerHTML = '';
   flyoverData = []; 
 	$('#passTimes').append('<tr><th>Flyover times for ' + formattedAddr + '</th><th>Duration</th></tr>');
 	var lat = data['request']['latitude'];
 	var lon = data['request']['longitude'];
+  var invisiPass = 0;
     data['response'].forEach(function (d) {
         var date = new Date(d['risetime']*1000);
         var duration = d['duration'];
@@ -101,14 +91,42 @@ function displayPassTimes(data, formattedAddr) {
         var seconds = padString(duration - (minutes * 60), 2, "0", "left");
         console.log("-------------------------------------------");
 		    console.log("ISS pass on ", date.toString());
-        if (isNighttime(lat, lon, date)) {
-            constructTableRow(lat, lon, date, "success", minutes, seconds, formattedAddr);
-        } else if (isBeforeDawn(lat, lon, date)) {
-          constructTableRow(lat, lon, date, "warning", minutes, seconds, formattedAddr);
-        } else { // daylight hours
-          constructTableRow(lat, lon, date, "danger", minutes, seconds, formattedAddr);
+        if (visibleEvening(lat, lon, date)) {
+            constructTableRow(lat, lon, date, "", minutes, seconds, formattedAddr);
+        } else if (visibleMorning(lat, lon, date)) {
+          constructTableRow(lat, lon, date, "", minutes, seconds, formattedAddr);
+        } else if (maybeVisible(lat, lon, date)) {
+          constructTableRow(lat, lon, date, "", minutes, seconds, formattedAddr)
+        } else { // too bright or too dark
+          invisiPass += 1;
+          $('#passCount').text('There were also ' + invisiPass + ' non-visible passes.');
         }
     });
+}
+
+function constructTableRow(lat, lon, date, category, min, sec, address) {
+  // insert the time and duration of a flyover with the correct timezone 
+  // and color coding for time of day
+  // I feel like I should move the timezone query outside since you really 
+  // only need to do it once, but I'm still having a hard time thinking in 
+  // terms of callbacks
+  var rowStart = '<tr class=' + category + '><td>';
+  var rowEnd = '</td><td>' + min + ' m ' + sec + ' s</td></tr>';
+  var utc = date.getTime();
+  // I am aware this is bad practice. If I wasn't hosting on static pages I'd read it in from a non-public file. 
+  $.getJSON("http://api.geonames.org/timezoneJSON?lat=" + lat + "&lng=" + lon + "&username=" + author, function(data) {
+    if (!('status' in data)) {
+      var tz = data['timezoneId'];
+      var queryMoment = moment.tz(utc, tz);
+      var correctedDate = queryMoment.format("ddd, MMM Do YYYY, hh:mm:ss a");
+      console.log(correctedDate);
+      var dateWithLink = "<a target='_blank' href='" + calendarLink(moment(queryMoment), min, sec, tz, address) + "'>" + correctedDate + "</a>";
+      $('#passTimes').append(rowStart + dateWithLink + rowEnd);
+    } else {
+      $('#passTimes').append(rowStart + "Sorry, this feature is broken right now :(" + rowEnd);
+    }
+    $('#tzInfo').text("All times for " + queryMoment.format("Z") + " GMT");
+  })
 }
 
 function calendarLink(startTime, durationMinutes, durationSeconds, tz, humanAddr) {
@@ -132,44 +150,6 @@ function calendarLink(startTime, durationMinutes, durationSeconds, tz, humanAddr
   return urlBase + dates + location + timezone;
 }
 
-function makeEventDates(start, minutes, seconds) {
-  // prob could separate out the construction and just pass in the date/moment
-  // I'm tired of this
-  // Actually for some reason it keeps insisting that utc() isn't a method when called from calendarLink,
-  // even though it works by itself? Something about dynamically assigned methods.
-  var begin = start.utc().year() + padString(start.utc().month()+1, 2, '0', 'left') + start.utc().date() + "T" + padString(start.utc().hour(), 2, '0', 'left') + padString(start.utc().minute(), 2, '0', 'left') + '00Z';
-  var endMoment = start.add(parseInt(minutes), 'minutes').add(parseInt(seconds), 'seconds');
-  var end = endMoment.utc().year() + padString(endMoment.utc().month()+1, 2, '0', 'left') + endMoment.utc().date() + "T" + padString(endMoment.utc().hour(), 2, '0', 'left') + padString(endMoment.utc().minute(), 2, '0', 'left') + '00Z';
-  return "&dates=" + begin + "/" + end
-}
-
-function constructTableRow(lat, lon, date, category, min, sec, address) {
-  // insert the time and duration of a flyover with the correct timezone 
-  // and color coding for time of day
-  // I feel like I should move the timezone query outside since you really 
-  // only need to do it once, but I'm still having a hard time thinking in 
-  // terms of callbacks
-  var rowStart = '<tr class=' + category + '><td>';
-  var rowEnd = '</td><td>' + min + ' m ' + sec + ' s</td></tr>';
-  var utc = date.getTime();
-  console.log("getting timezone info");
-  // I am aware this is bad practice. If I wasn't hosting on static pages I'd read it in from a non-public file. 
-  $.getJSON("http://api.geonames.org/timezoneJSON?lat=" + lat + "&lng=" + lon + "&username=" + author, function(data) {
-    console.log(data)
-    if (!('status' in data)) {
-      var tz = data['timezoneId'];
-      var queryMoment = moment.tz(utc, tz);
-      var correctedDate = queryMoment.format("ddd, MMM Do YYYY, hh:mm:ss a");
-      console.log(correctedDate);
-      var dateWithLink = "<a target='_blank' href='" + calendarLink(moment(queryMoment), min, sec, tz, address) + "'>" + correctedDate + "</a>";
-      $('#passTimes').append(rowStart + dateWithLink + rowEnd);
-    } else {
-      $('#passTimes').append(rowStart + "Sorry, this feature is broken right now :(" + rowEnd);
-    }
-    $('#tzInfo').text("All times for " + queryMoment.format("Z") + " GMT");
-  })
-}
-
 // Helper methods
 function padString(num, width, pad, side) {
   var padded = num.toString();
@@ -189,7 +169,25 @@ function isNighttime(lat, lon, date) {
 	return (date < times.nightEnd) || (times.night < date);
 }
 
-function isBeforeDawn(lat, lon, date) {
+function maybeVisible(lat, lon, date) {
+  // Arbitrary. Within some hours after sunset and some hours before sunrise.
+  var times = SunCalc.getTimes(date, lat, lon);
+  var late = new Date(times.sunset);
+  late.setHours(late.getHours() + 3);
+  var early = new Date(times.sunrise);
+  early.setHours(early.getHours() - 3);
+  var possibleLate = (times.sunset < date) && (date < late);
+  var possibleEarly = (early < date) && (date < times.sunrise);
+  return possibleLate || possibleEarly
+}
+
+function visibleEvening(lat, lon, date) {
+  // return whether date is after sunset but before night
+  var times = SunCalc.getTimes(date, lat, lon);
+  return (times.dusk < date) && (date < times.night);
+}
+
+function visibleMorning(lat, lon, date) {
 	// return whether date is after nightEnd but still before Dawn
 	var times = SunCalc.getTimes(date, lat, lon);
 	return (times.nightEnd < date) && (date < times.dawn);

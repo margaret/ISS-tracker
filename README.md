@@ -6,6 +6,7 @@ Basic implementation of ISS tracking using Google Maps Javascript API, GeoNames,
 ### General
 * Refactor
 * make padString have default args
+* get elevation from google maps API and pass to open-notify for flyover queries
 
 ### Flyover Predictions
 * double check quality of results / filter to be more similar to spot the station?
