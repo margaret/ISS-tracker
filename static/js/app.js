@@ -78,7 +78,7 @@ function geocodeLocation() {
 }
 
 function getPassTimes(lat, lon, addr, formattedAddr) { 
-	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=10&callback=?', function(data) {
+	$.getJSON('http://api.open-notify.org/iss-pass.json?lat='+ lat +'&lon=' + lon + '&alt=20&n=15&callback=?', function(data) {
     console.log("displaying pass times")
 		displayPassTimes(data, formattedAddr);
 	});
