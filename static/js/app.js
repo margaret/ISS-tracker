@@ -140,9 +140,9 @@ function calendarLink(startTime, durationMinutes, durationSeconds, tz, humanAddr
   // calendar time should be in UTC
   var beginTime = startTime.format("YYYYMMDD") + "T" + startTime.format() + "Z"
   var urlBase = "https://www.google.com/calendar/render?action=TEMPLATE&text=ISS+Flyover&details=International+Space+Station+flyover!+Via+http://margaretsy.com/ISS-tracker&output=xml" 
-  var begin = startTime.utc().year() + padString(startTime.utc().month()+1, 2, '0', 'left') + padString(startTime.utc().date(), 2, '0', 'left') + "T" + padString(startTime.utc().hour(), 2, '0', 'left') + padString(startTime.utc().minute(), 2, '0', 'left') + '00Z';
+  var begin = startTime.utc().year() + padString(startTime.utc().month()+1) + padString(startTime.utc().date()) + "T" + padString(startTime.utc().hour()) + padString(startTime.utc().minute()) + '00Z';
   var endMoment = startTime.add(parseInt(durationMinutes), 'minutes').add(parseInt(durationSeconds), 'seconds');
-  var end = endMoment.utc().year() + padString(endMoment.utc().month()+1, 2, '0', 'left') + padString(endMoment.utc().date(), 2, '0', 'left') + "T" + padString(endMoment.utc().hour(), 2, '0', 'left') + padString(endMoment.utc().minute(), 2, '0', 'left') + '00Z';
+  var end = endMoment.utc().year() + padString(endMoment.utc().month()+1) + padString(endMoment.utc().date()) + "T" + padString(endMoment.utc().hour()) + padString(endMoment.utc().minute()) + '00Z';
   var dates = "&dates=" + begin + "/" + end;
   // var dates = makeEventDates(beginTime, durationMinutes, durationSeconds);
   var location = "&location=" + humanAddr.split(' ').join('+');
@@ -152,6 +152,15 @@ function calendarLink(startTime, durationMinutes, durationSeconds, tz, humanAddr
 
 // Helper methods
 function padString(num, width, pad, side) {
+  if (width === undefined) {
+    width = 2;
+  }
+  if (pad === undefined) {
+    pad = '0';
+  }
+  if (side === undefined) {
+    side = 'left';
+  }
   var padded = num.toString();
   while (padded.length < width) {
     if (side == "left") {
