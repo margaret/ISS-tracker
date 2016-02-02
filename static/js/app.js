@@ -113,7 +113,7 @@ function constructTableRow(lat, lon, date, category, min, sec, address) {
   var rowStart = '<tr class=' + category + '><td>';
   var rowEnd = '</td><td>' + min + ' m ' + sec + ' s</td></tr>';
   var utc = date.getTime();
-  // I am aware this is bad practice. If I wasn't hosting on static pages I'd read it in from a non-public file. 
+  // I am aware this is terrible practice. If I wasn't hosting on static pages I guess I'd write some server side code to do the API call. 
   $.getJSON("http://api.geonames.org/timezoneJSON?lat=" + lat + "&lng=" + lon + "&username=" + author, function(data) {
     if (!('status' in data)) {
       var tz = data['timezoneId'];
